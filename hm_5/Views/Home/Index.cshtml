@@ -1,0 +1,87 @@
+﻿@using hm_5.ViewModels
+@using hm_5.Models
+@model IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form method="get">
+    <div class="form-inline">
+        @Html.Label("text", "Название:")
+        <div>
+            <input name="Name" value="@Model.FilterViewModel.SelectedName" class="form-control" />
+        </div>
+        
+        @Html.Label("text", "Жанр:")
+        <div style="margin-right: 40px">
+            <select name="categoryId" asp-items="Model.FilterViewModel.Categories" class="form-control"></select>
+        </div>
+        
+        <div>
+            <input type="submit" value="Фильтр" class="btn btn-outline-success" />
+        </div>
+    </div>
+</form>
+
+<p>
+    <a asp-action="Add" class="btn btn-dark" style="margin-top: 40px">Добавить игру</a>
+</p>
+
+<br />
+<table class="table table-warning">
+    <tr>
+        <th><a asp-action="Index"
+               asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-company="@(Model.FilterViewModel.SelectedCategory)">Название</a></th>
+        <th><a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.CatSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-company="@(Model.FilterViewModel.SelectedCategory)">Жанр</a></th>
+        <th><a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.RelSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-company="@(Model.FilterViewModel.SelectedCategory)">Дата выхода</a></th>
+        <th><a>Дни</a></th>
+        <th><a>Часы</a></th>
+        <th><a>Минуты</a></th>
+        <th><a>Секунды</a></th>
+    </tr>
+
+    @foreach (Game g in Model.Games)
+    {
+        <tr>
+            <td>@g.Name</td>
+            <td>@g.Category?.Name</td>
+            <td>@g.Release</td>
+            <td>@g.Lifetime.Days</td>
+            <td>@g.Lifetime.Hours</td>
+            <td>@g.Lifetime.Minutes</td>
+            <td>@g.Lifetime.Seconds</td>
+        </tr>
+    }
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+       asp-route-category="@(Model.FilterViewModel.SelectedCategory)"
+       asp-route-sortorder="@(Model.SortViewModel.Current)"
+       class="btn  btn-outline-info">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <div align = "right">
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-name="@(Model.FilterViewModel.SelectedName)"
+           asp-route-category="@(Model.FilterViewModel.SelectedCategory)"
+           asp-route-sortorder="@(Model.SortViewModel.Current)"
+           class="btn btn-outline-danger">
+            Вперед
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </a>
+    </div>
+}
